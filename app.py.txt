@@ -1,0 +1,146 @@
+from flask import Flask, render_template, request, redirect
+from flask_sqlalchemy import SQLAlchemy
+# from entities import (  Society, Member, Flat, Collection, Income, CollectionType,
+#                         Expense, ExpenseType, PaymentMethod, TransactionLog, UserRoles)
+# from entities import db
+from datetime import datetime
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///societies.db'
+
+db = SQLAlchemy(app)
+
+class Society(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+
+    def __repr__(self):
+        return '<Society %r>' % self.id
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
+class Member(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    society_id = db.Column(db.Integer)
+    flat_id = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(50))
+    phone = db.Column(db.String(14))
+    role_id = db.Column(db.Integer)
+    password = db.Column(db.String(10), nullable=False)
+
+    def __repr__(self):
+        return '<Member %r>' % self.id
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'society_id': self.society_id,
+            'flat': self.flat,
+            'name': self.name,
+            'email': self.email,
+            'phone': self.phone,
+            'role': self.role,
+            'password': self.password
+        }
+
+class Flat(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    flat_code = db.Column(db.String(2), nullable=False)
+    balance = db.Column(db.Integer)
+    owerner_id = db.Column(db.Integer)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'flat_code': self.flat_code,
+            'balance': self.balance,
+            'owerner_id': self.owerner_id
+        }
+
+class Collection(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type_id  = db.Column(db.Integer)
+    rate = db.Column(db.Integer)
+    collection_start_date = db.Column(db.DateTime, default = datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'type_id': self.type_id,
+            'rate': self.rate,
+            'collection_start_date': self.collection_start_date
+        }
+
+class Income(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    flat_id = db.Column(db.Integer)
+    due_amount = db.Column(db.Integer)
+    transaction_id = db.Column(db.Integer)
+    collection_id = db.Column(db.Integer)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'flat_id': self.flat_id,
+            'due_amount': self.due_amount,
+            'transaction_id': self.transaction_id,
+            'collection_id': self.collection_id
+        }
+
+class CollectionType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(20))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'type': self.type
+        }
+
+class Expense(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type_id  = db.Column(db.Integer)
+    transaction_id = db.Column(db.Integer)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'type_id': self.type_id,
+            'transaction_id': self.transaction_id
+        }
+
+class ExpenseType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(20))
+
+class PaymentMethod(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    method = db.Column(db.String(20))
+
+class TransactionLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer)  # flat id
+    receiver_id = db.Column(db.Integer)  # flat id
+    amount = db.Column(db.Integer)
+    date = db.Column(db.DateTime)
+    sender_balance = db.Column(db.Integer)
+    method_id = db.Column(db.Integer)
+    comment = db.Column(db.String(200))
+
+class UserRoles(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    role = db.Column(db.String(20))
+
+@app.route("/")
+def index():
+    # societies = Society.query.all()
+    # members = Member.query.all()
+    return render_template('index.html')
+
+if __name__ == "__main__":
+    app.run(debug=True)

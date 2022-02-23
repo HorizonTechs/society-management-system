@@ -1,0 +1,4 @@
+.vscode
+create_db.py
+app_modules/__pycache__
+app_modules/generate_secret_key.txt
