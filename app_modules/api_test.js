@@ -185,7 +185,7 @@ function add_payment_method(){
 // Collection
 
 function addCollection(){
-    fetch("http://localhost:5000/addCollection", {
+    fetch("https://hd-society-management-system.herokuapp.com/addCollection", {
         method: "POST",
         headers: {"Content-Type": "application/json"}, 
         body: JSON.stringify({
