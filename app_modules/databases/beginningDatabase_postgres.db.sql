@@ -1,93 +1,82 @@
 set transaction read write; 
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "country_currency" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"country_name"	VARCHAR(50),
 	"currency_name"	VARCHAR(50),
 	"currency_code"	VARCHAR(3),
-	PRIMARY KEY("id"),
 	UNIQUE("country_name")
 );
 CREATE TABLE IF NOT EXISTS "user" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"uuid"	VARCHAR(50),
 	"name"	VARCHAR(100) NOT NULL,
 	"email"	VARCHAR(50) NOT NULL,
 	"phone"	VARCHAR(14),
 	"last_logged_in"	DATE,
-	PRIMARY KEY("id"),
 	UNIQUE("phone"),
 	UNIQUE("email"),
 	UNIQUE("uuid")
 );
 CREATE TABLE IF NOT EXISTS "security_question" (
-	"id"	INTEGER NOT NULL,
-	"question"	VARCHAR(120),
-	PRIMARY KEY("id")
+	"id"	SERIAL PRIMARY KEY,
+	"question"	VARCHAR(120)
 );
 CREATE TABLE IF NOT EXISTS "account_type" (
-	"id"	INTEGER NOT NULL,
-	"account_type"	VARCHAR(50) NOT NULL,
-	PRIMARY KEY("id")
+	"id"	SERIAL PRIMARY KEY,
+	"account_type"	VARCHAR(50) NOT NULL
 );
 CREATE TABLE IF NOT EXISTS "collection_type" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"type"	VARCHAR(20) NOT NULL,
-	PRIMARY KEY("id"),
 	UNIQUE("type")
 );
 CREATE TABLE IF NOT EXISTS "payment_method" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"method"	VARCHAR(20) NOT NULL,
-	UNIQUE("method"),
-	PRIMARY KEY("id")
+	UNIQUE("method")
 );
 CREATE TABLE IF NOT EXISTS "user_role" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"role"	VARCHAR(20) NOT NULL,
-	UNIQUE("role"),
-	PRIMARY KEY("id")
+	UNIQUE("role")
 );
 CREATE TABLE IF NOT EXISTS "society" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"name"	VARCHAR(120) NOT NULL,
 	"address"	VARCHAR(120) NOT NULL,
 	"pin_code"	INTEGER NOT NULL,
 	"country_currency_id"	INTEGER NOT NULL,
 	FOREIGN KEY("country_currency_id") REFERENCES "country_currency"("id"),
-	UNIQUE("name","address","pin_code"),
-	PRIMARY KEY("id")
+	UNIQUE("name","address","pin_code")
 );
 CREATE TABLE IF NOT EXISTS "password_manager" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"password"	VARCHAR(120) NOT NULL,
 	"user_id"	INTEGER,
 	FOREIGN KEY("user_id") REFERENCES "user"("id"),
-	UNIQUE("user_id"),
-	PRIMARY KEY("id")
+	UNIQUE("user_id")
 );
 CREATE TABLE IF NOT EXISTS "role_manager" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"user_id"	INTEGER NOT NULL,
 	"society_id"	INTEGER,
 	"role_id"	INTEGER,
 	FOREIGN KEY("role_id") REFERENCES "user_role"("id"),
 	FOREIGN KEY("society_id") REFERENCES "society"("id"),
 	FOREIGN KEY("user_id") REFERENCES "user"("id"),
-	UNIQUE("user_id","society_id"),
-	PRIMARY KEY("id")
+	UNIQUE("user_id","society_id")
 );
 CREATE TABLE IF NOT EXISTS "flat" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"society_id"	INTEGER NOT NULL,
 	"flat_code"	VARCHAR(10) NOT NULL,
 	"area"	INTEGER NOT NULL,
 	FOREIGN KEY("society_id") REFERENCES "society"("id"),
-	UNIQUE("society_id","flat_code"),
-	PRIMARY KEY("id")
+	UNIQUE("society_id","flat_code")
 );
 CREATE TABLE IF NOT EXISTS "collection" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"name"	VARCHAR(120) NOT NULL,
 	"society_id"	INTEGER NOT NULL,
 	"type_id"	INTEGER NOT NULL,
@@ -96,37 +85,33 @@ CREATE TABLE IF NOT EXISTS "collection" (
 	"balance"	INTEGER NOT NULL,
 	"collection_start_date"	DATE NOT NULL,
 	FOREIGN KEY("type_id") REFERENCES "collection_type"("id"),
-	FOREIGN KEY("society_id") REFERENCES "society"("id"),
-	PRIMARY KEY("id")
+	FOREIGN KEY("society_id") REFERENCES "society"("id")
 );
 CREATE TABLE IF NOT EXISTS "member" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"user_id"	INTEGER NOT NULL,
 	"flat_id"	INTEGER NOT NULL,
 	FOREIGN KEY("user_id") REFERENCES "user"("id"),
 	FOREIGN KEY("flat_id") REFERENCES "flat"("id"),
-	UNIQUE("user_id","flat_id"),
-	PRIMARY KEY("id")
+	UNIQUE("user_id","flat_id")
 );
 CREATE TABLE IF NOT EXISTS "flat_owner" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"member_id"	INTEGER,
 	FOREIGN KEY("member_id") REFERENCES "member"("id"),
-	UNIQUE("member_id"),
-	PRIMARY KEY("id")
+	UNIQUE("member_id")
 );
 CREATE TABLE IF NOT EXISTS "account" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"account_type_id"	INTEGER NOT NULL,
 	"owner_id"	INTEGER,
 	"due_amount"	INTEGER NOT NULL,
 	FOREIGN KEY("account_type_id") REFERENCES "account_type"("id"),
 	FOREIGN KEY("owner_id") REFERENCES "flat_owner"("id"),
-	UNIQUE("owner_id"),
-	PRIMARY KEY("id")
+	UNIQUE("owner_id")
 );
 CREATE TABLE IF NOT EXISTS "transaction_log" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"sender_id"	INTEGER,
 	"receiver_id"	INTEGER,
 	"amount"	INTEGER NOT NULL,
@@ -134,11 +119,10 @@ CREATE TABLE IF NOT EXISTS "transaction_log" (
 	"method_id"	INTEGER NOT NULL,
 	FOREIGN KEY("method_id") REFERENCES "payment_method"("id"),
 	FOREIGN KEY("sender_id") REFERENCES "account"("id"),
-	FOREIGN KEY("receiver_id") REFERENCES "account"("id"),
-	PRIMARY KEY("id")
+	FOREIGN KEY("receiver_id") REFERENCES "account"("id")
 );
 CREATE TABLE IF NOT EXISTS "income" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"owner_id"	INTEGER NOT NULL,
 	"expected_amount"	INTEGER NOT NULL,
 	"transaction_id"	INTEGER,
@@ -147,34 +131,30 @@ CREATE TABLE IF NOT EXISTS "income" (
 	FOREIGN KEY("owner_id") REFERENCES "flat_owner"("id"),
 	FOREIGN KEY("transaction_id") REFERENCES "transaction_log"("id"),
 	UNIQUE("collection_id","owner_id"),
-	UNIQUE("transaction_id"),
-	PRIMARY KEY("id")
+	UNIQUE("transaction_id")
 );
 CREATE TABLE IF NOT EXISTS "expense" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"collection_id"	INTEGER NOT NULL,
 	"transaction_id"	INTEGER NOT NULL,
 	FOREIGN KEY("collection_id") REFERENCES "collection"("id"),
 	FOREIGN KEY("transaction_id") REFERENCES "transaction_log"("id"),
-	UNIQUE("transaction_id"),
-	PRIMARY KEY("id")
+	UNIQUE("transaction_id")
 );
 CREATE TABLE IF NOT EXISTS "transaction_comment" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"comment"	VARCHAR(200),
 	"transaction_id"	INTEGER NOT NULL,
 	FOREIGN KEY("transaction_id") REFERENCES "transaction_log"("id"),
-	UNIQUE("transaction_id"),
-	PRIMARY KEY("id")
+	UNIQUE("transaction_id")
 );
 CREATE TABLE IF NOT EXISTS "user_question_answer" (
-	"id"	INTEGER NOT NULL,
+	"id"	SERIAL PRIMARY KEY,
 	"user_id"	INTEGER NOT NULL,
 	"question_id"	INTEGER NOT NULL,
 	"answer"	VARCHAR(120) NOT NULL,
 	FOREIGN KEY("question_id") REFERENCES "security_question"("id"),
-	FOREIGN KEY("user_id") REFERENCES "user"("id"),
-	PRIMARY KEY("id")
+	FOREIGN KEY("user_id") REFERENCES "user"("id")
 );
 INSERT INTO "country_currency" ("id","country_name","currency_name","currency_code") VALUES (1,'Afghanistan','Afghan afghani','AFN'),
  (2,'Albania','Albanian lek','ALL'),
