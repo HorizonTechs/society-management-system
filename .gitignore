@@ -3,3 +3,4 @@ create_db.py
 app_modules/__pycache__
 app_modules/generate_secrete_key.txt
 app_modules/captcha_keys.txt
+app_modules/methods/__pycache__
