@@ -129,6 +129,9 @@ def delete_society(current_user, id):
             ),
             403,
         )
+    role_mgrs = RoleManager.query.filter(RoleManager.society_id==id)
+    for role_mgr in role_mgrs:
+        delete_entity(role_mgr)
     delete_entity(society_to_delete, "Soceity not deleted")
     db_commit()
     return jsonify(message="Society deleted successfully.")

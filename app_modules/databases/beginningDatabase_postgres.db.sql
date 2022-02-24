@@ -1,3 +1,4 @@
+set transaction read write; 
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "country_currency" (
 	"id"	INTEGER NOT NULL,
@@ -13,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "user" (
 	"name"	VARCHAR(100) NOT NULL,
 	"email"	VARCHAR(50) NOT NULL,
 	"phone"	VARCHAR(14),
-	"last_logged_in"	DATETIME,
+	"last_logged_in"	DATE,
 	PRIMARY KEY("id"),
 	UNIQUE("phone"),
 	UNIQUE("email"),
@@ -93,7 +94,7 @@ CREATE TABLE IF NOT EXISTS "collection" (
 	"rate"	INTEGER NOT NULL,
 	"fixed"	BOOLEAN NOT NULL,
 	"balance"	INTEGER NOT NULL,
-	"collection_start_date"	DATETIME NOT NULL,
+	"collection_start_date"	DATE NOT NULL,
 	FOREIGN KEY("type_id") REFERENCES "collection_type"("id"),
 	FOREIGN KEY("society_id") REFERENCES "society"("id"),
 	PRIMARY KEY("id")
@@ -129,7 +130,7 @@ CREATE TABLE IF NOT EXISTS "transaction_log" (
 	"sender_id"	INTEGER,
 	"receiver_id"	INTEGER,
 	"amount"	INTEGER NOT NULL,
-	"date"	DATETIME NOT NULL,
+	"date"	DATE NOT NULL,
 	"method_id"	INTEGER NOT NULL,
 	FOREIGN KEY("method_id") REFERENCES "payment_method"("id"),
 	FOREIGN KEY("sender_id") REFERENCES "account"("id"),

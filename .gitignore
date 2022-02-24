@@ -1,5 +1,4 @@
 .vscode
-create_db.py
 __pycache__
 env/Lib/site-packages/__pycache__
 app_modules/__pycache__
