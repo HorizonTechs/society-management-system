@@ -27,7 +27,7 @@ def add_entity(entity, error="Entity not added", status=500):
         db.session.add(entity)
         db.session.flush()
     except Exception as e:
-        abort(make_response(jsonify(message=e), status))
+        abort(make_response(jsonify(message=str(e)), status))
     # except:
     #     abort(make_response(jsonify(message=error), status))
 
