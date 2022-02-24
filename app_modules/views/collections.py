@@ -108,6 +108,10 @@ def add_collection(current_user):
 
     validate_modify_permission(current_user, society_id)
 
+    flat = Flat.query.filter(Flat.society_id==society_id).first()
+    if not flat:
+        return make_response(jsonify(message="Please add flats before adding collection"), 403)
+
     new_collection = Collection(
         name=name,
         society_id=society_id,
