@@ -1,5 +1,7 @@
 .vscode
 create_db.py
+__pycache__
+env/Lib/site-packages/__pycache__
 app_modules/__pycache__
 app_modules/generate_secrete_key.txt
 app_modules/captcha_keys.txt

@@ -108,9 +108,16 @@ def add_collection(current_user):
 
     validate_modify_permission(current_user, society_id)
 
-    flat = Flat.query.filter(Flat.society_id==society_id).first()
-    if not flat:
-        return make_response(jsonify(message="Please add flats before adding collection"), 403)
+    flats = Flat.query.filter(Flat.society_id==society_id)
+    if len(list(flats)) == 0:
+        return make_response(jsonify(message="Please add flats and members before adding collection"), 403)
+    owner = None
+    for flat in flats:
+        owner = get_flat_owner(flat.id)
+        if owner:
+            break
+    if not owner:
+        return make_response(jsonify(message="Please add members to flats before adding collection"), 403)    
 
     new_collection = Collection(
         name=name,
