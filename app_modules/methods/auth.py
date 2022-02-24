@@ -27,7 +27,7 @@ def login_required(f):
     return decorated
 
 def validate_captcha(token):
-    secret = current_app.config["CAPTCHA_SECRET_KEY"]
+    secret = current_app.config["CAP_KEY"]
     response = requests.post(f"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={token}")
     if response and response.json()['success']:
         return True
