@@ -16,6 +16,7 @@ from ..models import (
 from .common import (
     add_entity,
     db_flush,
+    delete_entity,
 )
 from .transactions import add_transaction, get_payment_methods
 from .flats import get_flat_owner
@@ -36,6 +37,9 @@ def revert_collection_deductions(collection_id):
                 Account.owner_id == owner_db.id
             ).first().due_amount -= due_amount
             total_expected += due_amount
+    incomes = Income.query.filter(Income.collection_id==collection_id)
+    for income in incomes:
+        delete_entity(income)
     add_transaction(
         sender_id=3,
         receiver_id=2,
@@ -61,7 +65,7 @@ def make_collection_deductions(collection_id):
                 expected_amount=expected_amount,
                 collection_id=collection_id,
             )
-            add_entity(new_income, "Collection not added")
+            add_entity(new_income, "Deductions for collection failed")
             owner_db = FlatOwner.query.get_or_404(owner.id)
             Account.query.filter(
                 Account.owner_id == owner_db.id
