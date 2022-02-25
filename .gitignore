@@ -6,5 +6,6 @@ app_modules/generate_secrete_key.txt
 app_modules/captcha_keys.txt
 app_modules/methods/__pycache__
 app_modules/views/__pycache__
-app_modules/views/databases
+app_modules/databases
+env/Lib/site-packages/__pycache__
 .env
