@@ -71,7 +71,6 @@ def delete_collection_type(id):
 
 @view.route("/getCollections/<society_id_str>")
 @login_required
-@log_if_error
 def get_collections(current_user, society_id_str):
     society_id = society_id_str.split("-")[-1]
     validate_get_permission(current_user, society_id)

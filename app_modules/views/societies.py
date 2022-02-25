@@ -11,6 +11,7 @@ from . import view
 @view.route("/getSocieties")
 @login_required
 def get_societies(current_user):
+    raise Exception("Exception to test log_if_err")
     user_roles = RoleManager.query.filter(RoleManager.user_id==current_user.id)
     if user_roles.first() and user_roles.first().role_id==1:
         societies = Society.query.all()
