@@ -73,7 +73,7 @@ def log_if_error(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         try:
-            f(*args, **kwargs)
+            return f(*args, **kwargs)
         except Exception as e:
             log_error_to_db(e)
     return decorated
