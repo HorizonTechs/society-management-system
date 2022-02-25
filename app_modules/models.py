@@ -185,3 +185,9 @@ class UserRole(db.Model):
 
     def __repr__(self):
         return '<UserRole %r>' % self.id
+
+class ErrorLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, nullable = False)
+    error_class = db.Column(db.String(36), unique=True, nullable=False)
+    error = db.Column(db.String(200), unique=True, nullable=False)

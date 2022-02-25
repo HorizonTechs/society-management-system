@@ -4,7 +4,7 @@ from flask import jsonify, make_response, abort
 
 from datetime import datetime
 
-from ..models import db
+from ..models import db, ErrorLog
 
 def to_dictionary_list(objects):
     output = []
@@ -26,26 +26,30 @@ def add_entity(entity, error="Entity not added", status=500):
     try:
         db.session.add(entity)
         db.session.flush()
-    except:
+    except Exception as e:
+        log_error_to_db(e)
         abort(make_response(jsonify(message=error), status))
 
 def delete_entity(entity, error="Entity not deleted", status=500):
     try:
         db.session.delete(entity)
         db.session.flush()
-    except:
+    except Exception as e:
+        log_error_to_db(e)
         abort(make_response(jsonify(message=error), status))
 
 def db_flush(error="Problem updating data", status=500):
     try:
         db.session.flush()
-    except:
+    except Exception as e:
+        log_error_to_db(e)
         abort(make_response(jsonify(message=error), status))
 
 def db_commit(error="Something went wrong", status=500):
     try:
         db.session.commit()
-    except:
+    except Exception as e:
+        log_error_to_db(e)
         abort(make_response(jsonify(message=error), status))
 
 class Map(dict):
@@ -59,6 +63,14 @@ def log_error(error):
     file.write(f'{datetime.now()} '
             f'---------------------------------------------------------------------\n{str(error)}\n')
     file.close()
+
+def log_error_to_db(exception_obj, date=datetime.now()):
+    try:
+        db.session.add(ErrorLog(date=date, error_class=exception_obj.__class__.__name__,
+        error=str(exception_obj)))
+        db.session.commit()
+    except Exception as e:
+        print(e)
 
 def generate_invitation_code():
     random_number = random.randint(100000, 999999)
