@@ -28,7 +28,8 @@ def add_entity(entity, error="Entity not added", status=500):
         db.session.flush()
     except Exception as e:
         log_error_to_db(e)
-        abort(make_response(jsonify(message=error), status))
+        abort(make_response(jsonify(message=e), status))
+        # abort(make_response(jsonify(message=error), status))
 
 def delete_entity(entity, error="Entity not deleted", status=500):
     try:

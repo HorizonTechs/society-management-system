@@ -18,27 +18,30 @@ from . import view
 @view.route("/getTransactions/<society_id_str>")
 @login_required
 def get_transactions(current_user, society_id_str):
-    society_id = int(society_id_str.split("-")[-1])
-    validate_get_permission(current_user, society_id)
-    transactions = TransactionLog.query.order_by(TransactionLog.id.desc()).limit(100)
-    transactions_list = []
-    for transaction in transactions:
-        if transaction.sender_id==1 or check_account_in_society(
-            transaction.sender_id, society_id
-        ) or check_account_in_society(transaction.receiver_id, society_id):
-            transactions_list.append(
-                {
-                    "public_id": transaction.public_id,
-                    "sender": get_account_details(transaction.sender_id),
-                    "receiver": get_account_details(transaction.receiver_id),
-                    "amount": transaction.amount,
-                    "date": datetime.strftime(transaction.date, "%Y-%m-%d"),
-                    "paymentMethod": PaymentMethod.query.get_or_404(
-                        transaction.method_id
-                    ).method,
-                    "transactionComment": get_transaction_comment(transaction.id),
-                }
-            )
+    try:
+        society_id = int(society_id_str.split("-")[-1])
+        validate_get_permission(current_user, society_id)
+        transactions = TransactionLog.query.order_by(TransactionLog.date.desc()).limit(100)
+        transactions_list = []
+        for transaction in transactions:
+            if transaction.sender_id==1 or check_account_in_society(
+                transaction.sender_id, society_id
+            ) or check_account_in_society(transaction.receiver_id, society_id):
+                transactions_list.append(
+                    {
+                        "public_id": transaction.public_id,
+                        "sender": get_account_details(transaction.sender_id),
+                        "receiver": get_account_details(transaction.receiver_id),
+                        "amount": transaction.amount,
+                        "date": datetime.strftime(transaction.date, "%Y-%m-%d"),
+                        "paymentMethod": PaymentMethod.query.get_or_404(
+                            transaction.method_id
+                        ).method,
+                        "transactionComment": get_transaction_comment(transaction.id),
+                    }
+                )
+    except Exception as e:
+        return jsonify(message=e)
     return jsonify(transactions_list)
 
 
