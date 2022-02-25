@@ -76,6 +76,7 @@ def log_if_error(f):
             return f(*args, **kwargs)
         except Exception as e:
             log_error_to_db(e)
+            return f(*args, **kwargs)
     return decorated
 
 def generate_invitation_code():

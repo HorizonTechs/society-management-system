@@ -97,6 +97,7 @@ def get_collections(current_user, society_id_str):
 
 @view.route("/addCollection", methods=["POST"])
 @login_required
+@log_if_error
 def add_collection(current_user):
     name = request.json["name"]
     type_id = request.json["typeId"]
