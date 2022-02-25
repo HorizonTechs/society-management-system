@@ -20,7 +20,6 @@ from . import view
 def get_transactions(current_user, society_id_str):
     society_id = int(society_id_str.split("-")[-1])
     validate_get_permission(current_user, society_id)
-
     transactions = TransactionLog.query.order_by(TransactionLog.date.desc()).limit(100)
     transactions_list = []
     for transaction in transactions:
