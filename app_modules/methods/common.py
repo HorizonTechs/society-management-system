@@ -1,6 +1,7 @@
 import os
 import random
 from flask import jsonify, make_response, abort
+from functools import wraps
 
 from datetime import datetime
 
@@ -26,30 +27,26 @@ def add_entity(entity, error="Entity not added", status=500):
     try:
         db.session.add(entity)
         db.session.flush()
-    except Exception as e:
-        log_error_to_db(e)
+    except:
         abort(make_response(jsonify(message=error), status))
 
 def delete_entity(entity, error="Entity not deleted", status=500):
     try:
         db.session.delete(entity)
         db.session.flush()
-    except Exception as e:
-        log_error_to_db(e)
+    except:
         abort(make_response(jsonify(message=error), status))
 
 def db_flush(error="Problem updating data", status=500):
     try:
         db.session.flush()
-    except Exception as e:
-        log_error_to_db(e)
+    except:
         abort(make_response(jsonify(message=error), status))
 
 def db_commit(error="Something went wrong", status=500):
     try:
         db.session.commit()
-    except Exception as e:
-        log_error_to_db(e)
+    except:
         abort(make_response(jsonify(message=error), status))
 
 class Map(dict):
@@ -71,6 +68,15 @@ def log_error_to_db(exception_obj, date=datetime.now()):
         db.session.commit()
     except Exception as e:
         print(e)
+
+def log_if_error(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        try:
+            f(*args, **kwargs)
+        except Exception as e:
+            log_error_to_db(e)
+    return decorated
 
 def generate_invitation_code():
     random_number = random.randint(100000, 999999)

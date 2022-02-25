@@ -18,7 +18,7 @@ from ..models import (
 from ..methods.auth import login_required
 from ..methods.transactions import revert_transaction
 from ..methods.societies import validate_get_permission, validate_modify_permission
-from ..methods.common import to_json_response, add_entity, delete_entity, db_commit
+from ..methods.common import log_if_error, to_json_response, add_entity, delete_entity, db_commit
 from ..methods.collections import *
 from . import view
     
@@ -71,6 +71,7 @@ def delete_collection_type(id):
 
 @view.route("/getCollections/<society_id_str>")
 @login_required
+@log_if_error
 def get_collections(current_user, society_id_str):
     society_id = society_id_str.split("-")[-1]
     validate_get_permission(current_user, society_id)
