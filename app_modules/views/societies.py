@@ -3,13 +3,14 @@ from flask import jsonify, request, make_response
 from ..models import Society, Flat, CountryCurrency
 from ..methods.auth import login_required
 from ..methods.flats import get_flat_owner
-from ..methods.common import add_entity, delete_entity, db_commit
+from ..methods.common import add_entity, delete_entity, db_commit, log_if_error
 from ..methods.societies import *
 
 from . import view
 
 @view.route("/getSocieties")
 @login_required
+@log_if_error
 def get_societies(current_user):
     raise Exception("Exception to test log_if_err")
     user_roles = RoleManager.query.filter(RoleManager.user_id==current_user.id)
