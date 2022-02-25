@@ -12,7 +12,6 @@ from . import view
 @login_required
 @log_if_error
 def get_societies(current_user):
-    abort(make_response(jsonify(message="this is some error"), 500))
     user_roles = RoleManager.query.filter(RoleManager.user_id==current_user.id)
     if user_roles.first() and user_roles.first().role_id==1:
         societies = Society.query.all()
