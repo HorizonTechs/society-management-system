@@ -409,6 +409,7 @@ def update_expense(current_user):
             method_id=method_id,
             comment=comment,
         )
+    update_collection_balance(expense.collection_id)
     db_commit()
     return jsonify(message="Expense updated successfully")
 
@@ -440,6 +441,7 @@ def delete_expense(current_user, id):
     validate_modify_permission(current_user, Collection.query.get_or_404(expense.collection_id).society_id)
     revert_transaction(expense.transaction_id)
     delete_entity(expense)
+    update_collection_balance(expense.collection_id)
     db_commit()
     return jsonify(message="Expense deleted successfully")
 
