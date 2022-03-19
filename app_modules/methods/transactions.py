@@ -88,7 +88,8 @@ def revert_transaction(transaction_id):
         receiver_id=transaction.sender_id,
         amount=transaction.amount,
         method_id=transaction.method_id,
-        comment="Reverted transaction %s" % transaction_id,
+        comment="Reverted transaction %s" % (
+            TransactionLog.query.get_or_404(transaction_id).public_id),
     )
 
     db_flush("Transaction not reverted")
